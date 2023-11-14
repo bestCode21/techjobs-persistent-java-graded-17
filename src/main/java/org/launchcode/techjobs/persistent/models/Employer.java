@@ -13,35 +13,21 @@ import java.util.List;
 
 @Entity
 public class Employer extends AbstractEntity {
-
-
-    @NotEmpty(message = "Location must have an annotation to ensure the field is not empty")
-    //@NotBlank(message = "Name is Required.")
-    @Size(max = 100, message = "Location must be less than 100 characters")
-    @NotNull(message = "Location must not be null")
-    private String location;
-
     @OneToMany
-    @JoinColumn(name = "employer_id")  // Add this line to specify the foreign key column
-    private List<Job> jobs = new ArrayList<>();
-
-    public Employer(){
+    @JoinColumn(name = "employer_id")
+    private final List<Job> jobs = new ArrayList<>();
+    @NotBlank(message = "Location is required")
+    @Size(min = 3, max = 50, message = "Location must be between 3 and 50 characters")
+    private String location;
+    public Employer() {
     }
-
-    public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
-    }
-
-    public Employer(String location){
-        //super();
-        this.location =location;
-    }
-
     public String getLocation() {
         return location;
     }
-
     public void setLocation(String location) {
         this.location = location;
+    }
+    public List<Job> getJobs() {
+        return jobs;
     }
 }

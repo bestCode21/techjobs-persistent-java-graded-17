@@ -16,36 +16,31 @@ import org.springframework.ui.Model;
 @Controller
 @RequestMapping("skills")
 public class SkillController {
-
-    // injects SkillRepository and allows  to access data inside the table
     @Autowired
     private SkillRepository skillRepository;
-
-    // displaying add skill page
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("title", "All Skills");
+        model.addAttribute("skills", skillRepository.findAll());
+        return "skills/index";
+    }
     @GetMapping("add")
     public String displayAddSkillForm(Model model) {
         model.addAttribute(new Skill());
         return "skills/add";
     }
-
-    // processes a form submission data from then add-skill page and creates a new skill
     @PostMapping("add")
     public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
                                       Errors errors, Model model) {
-
         if (errors.hasErrors()) {
             return "skills/add";
+        } else {
+            skillRepository.save(newSkill);
         }
-
-        skillRepository.save(newSkill);
         return "redirect:";
     }
-
-
-    // displays skill details with skill id
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
-
         Optional optSkill = skillRepository.findById(skillId);
         if (optSkill.isPresent()) {
             Skill skill = (Skill) optSkill.get();
@@ -54,12 +49,5 @@ public class SkillController {
         } else {
             return "redirect:../";
         }
-    }
-
-    // displays the list of all skills page
-    @GetMapping("")
-    public String index(Model model) {
-        model.addAttribute("skills", skillRepository.findAll());
-        return "skills/index";
     }
 }

@@ -20,33 +20,24 @@ import java.util.HashMap;
 @Controller
 @RequestMapping(value = "list")
 public class ListController {
-
     @Autowired
     private JobRepository jobRepository;
-
-    @Autowired
-    private EmployerRepository employerRepository;
-
     @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private EmployerRepository employerRepository;
     static HashMap<String, String> columnChoices = new HashMap<>();
-
     public ListController () {
-
         columnChoices.put("all", "All");
         columnChoices.put("employer", "Employer");
         columnChoices.put("skill", "Skill");
-
     }
-
-    // lists all employers and skills by category
     @RequestMapping("")
     public String list(Model model) {
         model.addAttribute("skills", skillRepository.findAll());
         model.addAttribute("employers", employerRepository.findAll());
         return "list";
     }
-    // lists jobs by columns skill or employer
     @RequestMapping(value = "jobs")
     public String listJobsByColumnAndValue(Model model, @RequestParam String column, @RequestParam String value) {
         Iterable<Job> jobs;
@@ -58,7 +49,14 @@ public class ListController {
             model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + value);
         }
         model.addAttribute("jobs", jobs);
-
         return "list-jobs";
     }
 }
+
+
+
+
+
+
+
+

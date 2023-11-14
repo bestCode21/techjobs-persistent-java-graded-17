@@ -14,33 +14,32 @@ import java.util.Optional;
 @Controller
 @RequestMapping("employers")
 public class EmployerController {
-    // EmployerRepository and allows to access data inside the table
     @Autowired
     private EmployerRepository employerRepository;
-    // displays and add employer form
-
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("title", "All Employers");
+        model.addAttribute("employers", employerRepository.findAll());
+        return "employers/index";
+    }
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
         model.addAttribute(new Employer());
         return "employers/add";
     }
-
     @PostMapping("add")
     public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
                                          Errors errors, Model model) {
-
         if (errors.hasErrors()) {
-            //model.addAttribute("title", "Add Employer");
             return "employers/add";
+        } else {
+            employerRepository.save(newEmployer);
+            return "redirect:";
         }
-        employerRepository.save(newEmployer);
-        return "redirect:";
     }
-
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
-
-        Optional<Employer> optEmployer = employerRepository.findById(employerId);
+        Optional optEmployer = employerRepository.findById(employerId);
         if (optEmployer.isPresent()) {
             Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employer);
@@ -48,12 +47,14 @@ public class EmployerController {
         } else {
             return "redirect:../";
         }
-
-    }
-    // displays all employers
-    @GetMapping("")
-    public String index(Model model) {
-        model.addAttribute("employers", employerRepository.findAll());
-        return "employers/index";
     }
 }
+
+
+
+
+
+
+
+
+
